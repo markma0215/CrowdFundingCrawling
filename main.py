@@ -7,6 +7,7 @@ import requests
 import logging
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
+import json
 
 def login():
     logging.info("get started to login")
@@ -38,20 +39,18 @@ def login():
 
 
 def main():
-    # sessionid, properties = login()
-    # gp.login_cookies[sessionid["name"]] = sessionid["value"]
-    #
-    # result = requests.session().get(properties, cookies = gp.login_cookies)
-    # html_text = result.text         # get "https://app.crowdstreet.com/properties/" html page
-
-    # fundedPro = Funded(html_text)
-    # currentPro = Current(html_text)
-    #
-    # fundedPro.parse()
-
     login()
-    response = gp.session.get("https://app.crowdstreet.com/properties/chase-suites-overland-park/")
+    response = gp.session.get("https://app.crowdstreet.com/properties/brookview-village/")
     print response.status_code
+    soup = BeautifulSoup(response.text, "html.parser")
+    # element = soup.find("div", class_="col-sm-12 col-md-6 col-lg-4")
+    label = soup.select_one(".summary-items .summary-table > tbody > tr > td + td")
+    print label
+    # print len(names)
+
+    # config_file = open("config.json", "r")
+    # config_dict = json.load(config_file)
+    # print config_dict.keys()
 
 if __name__ == "__main__":
 

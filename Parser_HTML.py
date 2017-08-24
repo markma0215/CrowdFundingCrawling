@@ -15,7 +15,7 @@ def find_all(node, tag_name, class_name):
 
 
 def string(node):
-    s = node.string
+    s = node.string.strip()
     if s:
         return s
     else:
@@ -77,6 +77,22 @@ def span(node):
     else:
         return None
 
+
+def select_one(node, param):
+    element = node.select_one(param)
+    if element:
+        return element
+    else:
+        return None
+
+
+def select(node, param):
+    element_list = node.select(param)
+    if len(element_list) == 0:
+        return None
+    else:
+        return element_list
+
 parser_map = {
     "find": find,
     "find_all": find_all,
@@ -87,5 +103,7 @@ parser_map = {
     "attri_href": attri_href,
     "find_itemprop": find_itemprop,
     "find_all_itemprop": find_all_itemprop,
-    "span": span
+    "span": span,
+    "select_one": select_one,
+    "select": select
 }

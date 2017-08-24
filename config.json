@@ -1,0 +1,71 @@
+{
+  "current": {
+    "current_list": {
+      "method": "find_all",
+      "tag_name": "div",
+      "class_name": "col-sm-12 col-md-6 col-lg-4"
+    },
+    "each_item": {
+      "mandatory": {
+        "link": {
+          "method": "select_one",
+          "param": ".property-listing .property-summary .property-listing-feature .property-listing-image > h2 > a",
+          "moreOp": "attri_href"
+        },
+        "Portal ID": "",
+        "Campaign ID": "",
+        "Campaign Name": {
+          "method": "select_one",
+          "param": ".property-listing .property-summary .property-listing-feature .property-listing-image > h2 > a",
+          "moreOp": "string"
+        },
+        "Data Collection Date": "",
+        "First_Time(0/1)": "",
+        "Funded(0/1)": ""
+        //      "Date Posted":
+        //      "% Funded": ""
+      },
+      "optional": {
+        "Location": {
+          "method": "select_one",
+          "param": ".property-listing .property-summary .property-listing-feature .property-listing-image > h2 > span",
+          "moreOp": "string"
+        },
+        "Fund Name": {
+          "method": "select_one",
+          "param": ".property-listing .property-summary .property-listing-sponsor .listing-sponsor-info > h4 > a",
+          "moreOp": "string"
+        },
+        "Comment (seasoned/repeated etc.)": {
+          "method": "select_one",
+          "param": ".property-listing .property-summary .property-listing-sponsor .listing-sponsor-info > h5 > div > span",
+          "moreOp": "string"
+        }
+      },
+      "innerPage": {
+        "right_corner": {
+          "label": {
+            "method": "select",
+            "param": ".summary-items .summary-table > tbody > tr > td",
+            "moreOp": "string"
+          },
+          "value": {
+            "method": "select",
+            "param": ".summary-items .summary-table > tbody > tr > td + td",
+            "moreOp": "string"
+          }
+        },
+        "middle_variables": {
+
+        }
+      }
+    }
+  },
+  "funded_list": {
+    "method": "find_all",
+    "tag_name": "div",
+    "class_name": "col-md-4 col-sm-6",
+    "each_item": {
+    }
+  }
+}

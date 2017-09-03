@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 import json
 
+
 def login():
     logging.info("get started to login")
     session = requests.session()
@@ -57,4 +58,5 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     logging.info("Get Started to Crawl")
     main()
+
 

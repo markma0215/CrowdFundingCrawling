@@ -56,6 +56,11 @@
             "param": ".summary-table > tbody > tr .value",
             "moreOp": "string"
           }
+        },
+        "Video Pitch (0/1)": "hasVideoPitch",
+        "THE Business Plan": "extractBusinessPlan",
+        "documents": {
+          "param": ".no-left-margin .list-unstyled > li > a"
         }
       }
     }

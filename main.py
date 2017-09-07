@@ -7,7 +7,7 @@ import requests
 import logging
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
-import json
+
 
 
 def login():
@@ -41,22 +41,25 @@ def login():
 
 def main():
     login()
-    response = gp.session.get("https://app.crowdstreet.com/properties/brookview-village/")
-    print response.status_code
-    soup = BeautifulSoup(response.text, "html.parser")
-    # element = soup.find("div", class_="col-sm-12 col-md-6 col-lg-4")
-    label = soup.select_one(".summary-items .summary-table > tbody > tr > td + td")
-    print label
-    # print len(names)
+    all_property_page = gp.session.get("https://app.crowdstreet.com/properties/")
 
-    # config_file = open("config.json", "r")
-    # config_dict = json.load(config_file)
-    # print config_dict.keys()
+    current = Current(all_property_page)
+    current.parse()
+
+    funded = Funded(all_property_page)
+    funded.parse()
+
+    # with open("pdf.pdf", "wb") as pdfwriter:
+    #     pdfwriter.write(response_pdf.content)
+
+
+
 
 if __name__ == "__main__":
 
     logging.basicConfig(level=logging.INFO)
     logging.info("Get Started to Crawl")
     main()
+
 
 

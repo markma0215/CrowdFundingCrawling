@@ -43,10 +43,10 @@ def main():
     login()
     all_property_page = gp.session.get("https://app.crowdstreet.com/properties/")
 
-    current = Current(all_property_page)
+    current = Current(all_property_page.text)
     current.parse()
 
-    funded = Funded(all_property_page)
+    funded = Funded(all_property_page.text)
     funded.parse()
 
     # with open("pdf.pdf", "wb") as pdfwriter:

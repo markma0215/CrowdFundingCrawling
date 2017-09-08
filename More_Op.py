@@ -1,10 +1,15 @@
 
 import Global_Para as gp
 import datetime
+import sys
 
 
 def string(element):
-    return element.string
+    content = element.string
+    if content:
+        return content.strip('\n').strip()
+    else:
+        return ""
 
 
 def href_attribute(element):
@@ -13,12 +18,13 @@ def href_attribute(element):
 
 def current_campaign_id():
     gp.current_campaign_id = gp.current_campaign_id + 1
-    return gp.current_campaign_id
+    return str(gp.current_campaign_id)
 
 
 def collection_date():
     now = datetime.datetime.now()
-    return now.strftime("%Y-%m-%d")
+    now = now.strftime("%Y-%m-%d")
+    return now
 
 
 def isFirstTime():
@@ -29,32 +35,29 @@ def isFirstTime():
 
 
 def hasVideoPitch(element):
-    video_pitch = element.find("div", class_="wistia_video_foam_dummy")
+    video_pitch = element.find("div", class_="wistia_responsive_wrapper")
     if video_pitch:
-        return True
+        return "1"
     else:
-        return False
+        return "0"
 
 
 def extractBusinessPlan(element):
-    summaries = element.select(".summary-table-container .col-lg-12")
+    summaries = element.find_all("div", class_="row summary-table-container")
     business_plan = ""
     for each_summary in summaries:
-        if each_summary.h3 and each_summary.h3.string == "The Business Plan":
-            each_summary.find("ul", class_="nav nav-tabs").decompose()
+        title = each_summary.select_one(".col-lg-12 > h3")
+        if title and title.string and "Business Plan" in title.string.strip():
+            if each_summary.find("ul", class_="nav nav-tabs"):
+                each_summary.find("ul", class_="nav nav-tabs").decompose()
             for each_string in each_summary.stripped_strings:
                 each_string = each_string.strip("\n").strip()
-                if each_string == "The Business Plan":
+                if each_string == "The Business Plan" or each_string == "Business Plan":
                     continue
                 business_plan = business_plan + each_string.replace("*", "").replace("/", " ").strip() + " "
             break
 
     return business_plan.strip()
-
-
-def saveHTMLpage(response):
-    with open("c_page.html", "w") as fd:
-        fd.write(response.text.encode("utf-8"))
 
 
 more_Op = {
@@ -64,6 +67,5 @@ more_Op = {
     "collection_date": collection_date,
     "isFirstTime": isFirstTime,
     "hasVideoPitch": hasVideoPitch,
-    "extractBusinessPlan": extractBusinessPlan,
-    "saveHTMLpage": saveHTMLpage
+    "extractBusinessPlan": extractBusinessPlan
 }

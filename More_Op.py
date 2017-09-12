@@ -1,13 +1,20 @@
 
 import Global_Para as gp
 import datetime
-import sys
 
 
-def string(element):
+def string(element, replacement=None):
     content = element.string
     if content:
-        return content.strip('\n').strip()
+        if replacement:
+            if isinstance(replacement, list):
+                for each_replace in replacement:
+                    content = content.replace(each_replace, "").strip("\n").strip()
+                return content
+            else:
+                return content.replace(replacement, "").strip("\n").strip()
+        else:
+            return content.strip('\n').strip()
     else:
         return ""
 
@@ -19,6 +26,11 @@ def href_attribute(element):
 def current_campaign_id():
     gp.current_campaign_id = gp.current_campaign_id + 1
     return str(gp.current_campaign_id)
+
+
+def funded_campaign_id():
+    gp.funded_campaign_id = gp.funded_campaign_id + 1
+    return str(gp.funded_campaign_id)
 
 
 def collection_date():
@@ -67,5 +79,6 @@ more_Op = {
     "collection_date": collection_date,
     "isFirstTime": isFirstTime,
     "hasVideoPitch": hasVideoPitch,
-    "extractBusinessPlan": extractBusinessPlan
+    "extractBusinessPlan": extractBusinessPlan,
+    "funded_campaign_id": funded_campaign_id
 }

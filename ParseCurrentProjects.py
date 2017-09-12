@@ -34,6 +34,7 @@ class ParseCurrentPro():
                     config = self.__config[each_variable]
                     one_property.update(self.__parse_normal_variables(each_property, config, each_variable))
             self.__saveHTML(one_property)
+            self.__downloadPDF(one_property)
             print one_property
             self.__crawl_data.append(one_property)
 
@@ -84,13 +85,36 @@ class ParseCurrentPro():
             fd.write(self.__learn_more_response.text.encode("utf-8"))
 
 
-    def downloadPDF(self, property_url):
+    def __downloadPDF(self, one_property):
 
         home_page_soup = BeautifulSoup(self.__learn_more_response.text, "html.parser")
+        pdf_links = home_page_soup.select(".no-left-margin .list-unstyled > li > a")
+        for each_link in pdf_links:
+            link = each_link["href"]
+            if "confidentiality-agreement" in link:
+                print "in agreement"
+                self.__aggre_confidentiality(link, home_page_soup)
+                document_link = each_link["data-document-url"]
+                pdf_url = gp.base_url + document_link
+                pdf_name = each_link.span.string.strip()
+            else:
+                print "not have agreement"
+                pdf_url = gp.base_url + link
+                pdf_name = each_link.string.strip()
+            response = gp.session.get(pdf_url)
+            if response.status_code != 200:
+                print "in download PDF, response code is not 200"
+                print response.status_code
+                sys.exit(1)
+            file_name = gp.Documents_In_Progress.replace("{ID}", one_property["Campaign ID"]) + "/" + pdf_name + ".pdf"
+            with open(file_name, "wb") as pdfwriter:
+                pdfwriter.write(response.content)
+
+    def __aggre_confidentiality(self, link, soup):
         param = {
             "request-access-terms-agreement": "true"
         }
-        param_list = home_page_soup.select(".form-horizontal > input")
+        param_list = soup.select(".form-horizontal > input")
         for each_param in param_list:
             key = each_param["name"]
             value = each_param["value"]
@@ -102,9 +126,12 @@ class ParseCurrentPro():
             "User-Agent": user_agent
         }
 
-        response = gp.session.post(
-            "https://app.crowdstreet.com/properties/bv-multifamily-fund/confidentiality-agreement/",
-            headers=header, data=param)
-        print response.status_code
-        # ".no-left-margin .list-unstyled > li > a"
+        agreement_link = gp.base_url + link
+        response = gp.session.post(agreement_link, headers=header, data=param)
+        if response.status_code != 200:
+            print "in agreement response, code is not 200"
+            print response.status_code
+            sys.exit(1)
+
+
 

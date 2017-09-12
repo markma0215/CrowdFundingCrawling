@@ -1,0 +1,51 @@
+{
+  "funded_list": {
+    "param": ".closed-property-list .col-md-4",
+    "moreOp": ""
+  },
+  "Portal ID": "1",
+  "Campaign ID": "funded_campaign_id",
+  "Campaign Name": {
+    "param": ".property-listing .property-summary .property-listing-feature .property-listing-image .property-listing-name .private-after-closed-name",
+    "moreOp": "string"
+  },
+  "Data Collection Date": "collection_date",
+  "First_Time(0/1)": "isFirstTime",
+  "Funded(0/1)": "1",
+  "Date Posted": "",
+  "Date Funded": "",
+  "% Funded": "100",
+  "Closed": {
+    "param": ".property-listing .property-summary .date-closed-wrapper .date-closed",
+    "moreOp": "string",
+    "replacement": "Closed "
+  },
+  "Location": {
+    "param": ".property-listing .property-summary .property-listing-feature .property-listing-image .property-listing-name .property-listing-location",
+    "moreOp": "string"
+  },
+  "Fund Name": {
+    "param": ".listing-sponsor-info > h4 > a",
+    "moreOp": "string"
+  },
+  "Funding Amount": {
+    "param": ".closed-amt-raised > span",
+    "moreOp": "string",
+    "replacement": ["Committed", "Raised"]
+  },
+  "Num. Investors": {
+    "param": ".closed-num-investors > span",
+    "moreOp": "string",
+    "replacement": "Investors"
+  },
+  "variables": {
+    "key": {
+      "param": ".closed-highlights > div .highlight-label",
+      "moreOp": "string"
+    },
+    "value": {
+      "param": ".closed-highlights > div .highlight-value",
+      "moreOp": "string"
+    }
+  }
+}

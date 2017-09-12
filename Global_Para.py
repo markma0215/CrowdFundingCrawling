@@ -8,7 +8,8 @@ password = "Crowd1234566$$$"
 session = ""
 website_structure_has_changed = "website structure has changed"
 
-current_campaign_id = 1
+current_campaign_id = 0
+funded_campaign_id = 0
 isFirstTime = False
 
 First_Run_Funded = "Data Collection/1/1_First Run_Funded/Portal ID_1_First Run_Funded.csv"

@@ -2,13 +2,16 @@ from More_Op import more_Op as mo
 
 class Parser():
     @classmethod
-    def parseSpecificVariable(cls, element, config, variable_name):
+    def parseSpecificVariable(cls, element, config, variable_name, replacement=None):
         param = config["param"]
         more_op = config["moreOp"]
         tags = element.select(param)
         values = []
         for each_tag in tags:
-            values.append(mo[more_op](each_tag))
+            if replacement:
+                values.append(mo[more_op](each_tag, replacement))
+            else:
+                values.append(mo[more_op](each_tag))
         one_variable = {variable_name: " ".join(value for value in values)}
         return one_variable
 
@@ -19,6 +22,10 @@ class Parser():
     @classmethod
     def parseStringWithEle(cls, element, config, variable_name):
         return {variable_name: mo[config](element)}
+
+    @classmethod
+    def parseElementWithReplacement(cls, element, config, variable_name, replacement):
+        return {variable_name: mo[config](element, replacement)}
 
     @classmethod
     def parseKeyValue(cls, element, config):
@@ -33,5 +40,7 @@ class Parser():
         for i in range(len(keys_elements)):
             key = mo[key_more_op](keys_elements[i])
             value = mo[value_more_op](value_elements[i])
+            if key == "Location":
+                key = key.upper()
             one_property.update({key: value})
         return one_property

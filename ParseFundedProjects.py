@@ -39,7 +39,7 @@ class ParseFundedPro():
                         one_property.update(Parser.parseSpecificVariable(each_property, config, variable_name, replacement=config["replacement"]))
                     else:
                         one_property.update(Parser.parseSpecificVariable(each_property, config, variable_name))
-            print one_property
+            # print one_property
             self.__crawl_data.append(one_property)
         return self.__crawl_data
 

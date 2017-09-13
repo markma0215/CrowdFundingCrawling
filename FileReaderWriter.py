@@ -1,5 +1,9 @@
 import json
-
+import Global_Para as gp
+import os.path
+import sys
+import csv
+import datetime
 
 class FileReaderWriter():
     @classmethod
@@ -13,3 +17,136 @@ class FileReaderWriter():
         funded_file = open("funded_config.json", "r")
         funded_dict = json.load(funded_file)
         return funded_dict
+
+    @classmethod
+    def readRunFundedProperties(cls):
+        file_name = raw_input("please input the Subsequent Runs_Funded file name used as a base")
+        file_name = gp.reading_subsequent_runs_funded + file_name
+        if not os.path.exists(file_name):
+            print "Error: cannot Subsequent Runs_Funded File"
+            print "system exits..."
+            sys.exit(1)
+
+        return FileReaderWriter.reader(file_name)
+
+    @classmethod
+    def readInProgressProperties(cls):
+        file_name = raw_input("please input Subsequent Runs_In Progress file name used as a base")
+        file_name = gp.reading_subsequent_runs_in_progress + file_name
+        if not os.path.exists(file_name):
+            print "Error: cannot Subsequent Runs_In Progress File"
+            print "system exits..."
+            sys.exit(1)
+
+        return FileReaderWriter.reader(file_name)
+
+    @classmethod
+    def writeInProgressProperties(cls, fieldname, data):
+        date = datetime.datetime.now()
+        date = date.strftime("%Y-%m-%d")
+        file_name = gp.writing_Subsequent_Runs_In_Progress.replace("{date}", date)
+        if os.path.exists(file_name):
+            while 1:
+                doesReplace = raw_input("There is a same file in folder %s, replace old one?"
+                                        " Yes: 1, No: 0" % gp.reading_subsequent_runs_in_progress)
+                if doesReplace == "1":
+                    print "replacing the old file...."
+                    FileReaderWriter.writer(file_name=file_name, fieldname=fieldname, data=data)
+                    print "replaced"
+                    return
+                elif doesReplace == "0":
+                    print "do not replace the old file"
+                    return
+                else:
+                    print "please enter 1 for yes, 0 for no."
+        else:
+            FileReaderWriter.writer(file_name=file_name, fieldname=fieldname, data=data)
+
+    @classmethod
+    def writeRunsFundedProperties(cls, fieldname, data):
+        date = datetime.datetime.now()
+        date = date.strftime("%Y-%m-%d")
+        file_name = gp.writing_Subsequent_Runs_Funded.replace("{date}", date)
+        if os.path.exists(file_name):
+            while 1:
+                doesReplace = raw_input("There is a same file in folder %s, replace old one?"
+                                        " Yes: 1, No: 0" % gp.reading_subsequent_runs_funded)
+                if doesReplace == "1":
+                    print "replacing the old file...."
+                    FileReaderWriter.writer(file_name=file_name, fieldname=fieldname, data=data)
+                    print "replaced"
+                    return
+                elif doesReplace == "0":
+                    print "do not replace the old file"
+                    return
+                else:
+                    print "please enter 1 for yes, 0 for no."
+        else:
+            FileReaderWriter.writer(file_name=file_name, fieldname=fieldname, data=data)
+
+    @classmethod
+    def writeFirstRunFunded(cls, fieldname, data):
+        file_name = "Portal ID_1_First Run_Funded.csv"
+        if os.path.exists(gp.First_Run_Funded):
+            while 1:
+                doesReplace = raw_input("There is a same file in folder %s and folder %s, replace old ones?"
+                                        " Yes: 1, No: 0" % (gp.First_Run_Funded_folder, gp.writing_Subsequent_Runs_Funded))
+                if doesReplace == "1":
+                    print "replace the old files...."
+                    FileReaderWriter.writer(file_name=gp.First_Run_Funded, fieldname=fieldname, data=data)
+                    file_name = gp.writing_Subsequent_Runs_Funded + file_name
+                    FileReaderWriter.writer(file_name=file_name, fieldname=fieldname,data=data)
+                    print "replaced"
+                    return
+                elif doesReplace == "0":
+                    print "do not replace the old file"
+                    return
+                else:
+                    print "please enter 1 for yes, 0 for no."
+        else:
+            FileReaderWriter.writer(file_name=gp.First_Run_Funded, fieldname=fieldname, data=data)
+            file_name = gp.writing_Subsequent_Runs_Funded + file_name
+            FileReaderWriter.writer(file_name=file_name, fieldname=fieldname, data=data)
+
+    @classmethod
+    def writeFirstRunInProgress(cls, fieldname, data):
+        file_name = "Portal ID_1_First Run_In Progress.csv"
+        if os.path.exists(gp.First_Run_In_Progress):
+            while 1:
+                doesReplace = raw_input("There is a same file in folder %s and folder %s, replace old ones?"
+                                        " Yes: 1, No: 0" % (gp.First_Run_In_Progress_folder, gp.writing_Subsequent_Runs_In_Progress))
+                if doesReplace == "1":
+                    print "replace the old files...."
+                    FileReaderWriter.writer(file_name=gp.First_Run_In_Progress, fieldname=fieldname, data=data)
+                    file_name = gp.writing_Subsequent_Runs_In_Progress + file_name
+                    FileReaderWriter.writer(file_name=file_name, fieldname=fieldname, data=data)
+                    print "replaced"
+                    return
+                elif doesReplace == "0":
+                    print "do not replace the old file"
+                    return
+                else:
+                    print "please enter 1 for yes, 0 for no."
+        else:
+            FileReaderWriter.writer(file_name=gp.First_Run_In_Progress, fieldname=fieldname, data=data)
+            file_name = gp.writing_Subsequent_Runs_In_Progress + file_name
+            FileReaderWriter.writer(file_name=file_name, fieldname=fieldname, data=data)
+
+    @staticmethod
+    def writer(file_name, fieldname, data):
+        with open(file_name, "wb") as csvDict:
+            writer = csv.DictWriter(csvDict, fieldnames=fieldname)
+            writer.writeheader()
+            writer.writerows(data)
+
+    @staticmethod
+    def reader(file_name):
+        with open(file_name, "r") as csvDict:
+            reader = csv.DictReader(csvDict)
+            variable_names = reader.fieldnames
+            previous_data = []
+            for row in reader:
+                previous_data.append(row)
+        return variable_names, previous_data
+
+

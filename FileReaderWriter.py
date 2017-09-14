@@ -21,7 +21,7 @@ class FileReaderWriter():
     @classmethod
     def readRunFundedProperties(cls):
         file_name = raw_input("please input the Subsequent Runs_Funded file name used as a base")
-        file_name = gp.reading_subsequent_runs_funded + file_name
+        file_name = gp.subsequent_runs_funded_folder + file_name
         if not os.path.exists(file_name):
             print "Error: cannot Subsequent Runs_Funded File"
             print "system exits..."
@@ -32,7 +32,7 @@ class FileReaderWriter():
     @classmethod
     def readInProgressProperties(cls):
         file_name = raw_input("please input Subsequent Runs_In Progress file name used as a base")
-        file_name = gp.reading_subsequent_runs_in_progress + file_name
+        file_name = gp.subsequent_runs_in_progress_folder + file_name
         if not os.path.exists(file_name):
             print "Error: cannot Subsequent Runs_In Progress File"
             print "system exits..."
@@ -44,11 +44,11 @@ class FileReaderWriter():
     def writeInProgressProperties(cls, fieldname, data):
         date = datetime.datetime.now()
         date = date.strftime("%Y-%m-%d")
-        file_name = gp.writing_Subsequent_Runs_In_Progress.replace("{date}", date)
+        file_name = gp.Subsequent_Runs_In_Progress_File_Template.replace("{date}", date)
         if os.path.exists(file_name):
             while 1:
                 doesReplace = raw_input("There is a same file in folder %s, replace old one?"
-                                        " Yes: 1, No: 0" % gp.reading_subsequent_runs_in_progress)
+                                        " Yes: 1, No: 0" % gp.subsequent_runs_in_progress_folder)
                 if doesReplace == "1":
                     print "replacing the old file...."
                     FileReaderWriter.writer(file_name=file_name, fieldname=fieldname, data=data)
@@ -66,11 +66,11 @@ class FileReaderWriter():
     def writeRunsFundedProperties(cls, fieldname, data):
         date = datetime.datetime.now()
         date = date.strftime("%Y-%m-%d")
-        file_name = gp.writing_Subsequent_Runs_Funded.replace("{date}", date)
+        file_name = gp.Subsequent_Runs_Funded_File_Template.replace("{date}", date)
         if os.path.exists(file_name):
             while 1:
                 doesReplace = raw_input("There is a same file in folder %s, replace old one?"
-                                        " Yes: 1, No: 0" % gp.reading_subsequent_runs_funded)
+                                        " Yes: 1, No: 0" % gp.subsequent_runs_funded_folder)
                 if doesReplace == "1":
                     print "replacing the old file...."
                     FileReaderWriter.writer(file_name=file_name, fieldname=fieldname, data=data)
@@ -90,11 +90,11 @@ class FileReaderWriter():
         if os.path.exists(gp.First_Run_Funded):
             while 1:
                 doesReplace = raw_input("There is a same file in folder %s and folder %s, replace old ones?"
-                                        " Yes: 1, No: 0" % (gp.First_Run_Funded_folder, gp.writing_Subsequent_Runs_Funded))
+                                        " Yes: 1, No: 0" % (gp.First_Run_Funded_folder, gp.subsequent_runs_funded_folder))
                 if doesReplace == "1":
                     print "replace the old files...."
                     FileReaderWriter.writer(file_name=gp.First_Run_Funded, fieldname=fieldname, data=data)
-                    file_name = gp.writing_Subsequent_Runs_Funded + file_name
+                    file_name = gp.subsequent_runs_funded_folder + file_name
                     FileReaderWriter.writer(file_name=file_name, fieldname=fieldname,data=data)
                     print "replaced"
                     return
@@ -105,7 +105,7 @@ class FileReaderWriter():
                     print "please enter 1 for yes, 0 for no."
         else:
             FileReaderWriter.writer(file_name=gp.First_Run_Funded, fieldname=fieldname, data=data)
-            file_name = gp.writing_Subsequent_Runs_Funded + file_name
+            file_name = gp.subsequent_runs_funded_folder + file_name
             FileReaderWriter.writer(file_name=file_name, fieldname=fieldname, data=data)
 
     @classmethod
@@ -114,11 +114,11 @@ class FileReaderWriter():
         if os.path.exists(gp.First_Run_In_Progress):
             while 1:
                 doesReplace = raw_input("There is a same file in folder %s and folder %s, replace old ones?"
-                                        " Yes: 1, No: 0" % (gp.First_Run_In_Progress_folder, gp.writing_Subsequent_Runs_In_Progress))
+                                        " Yes: 1, No: 0" % (gp.First_Run_In_Progress_folder, gp.subsequent_runs_in_progress_folder))
                 if doesReplace == "1":
                     print "replace the old files...."
                     FileReaderWriter.writer(file_name=gp.First_Run_In_Progress, fieldname=fieldname, data=data)
-                    file_name = gp.writing_Subsequent_Runs_In_Progress + file_name
+                    file_name = gp.subsequent_runs_in_progress_folder + file_name
                     FileReaderWriter.writer(file_name=file_name, fieldname=fieldname, data=data)
                     print "replaced"
                     return
@@ -129,7 +129,7 @@ class FileReaderWriter():
                     print "please enter 1 for yes, 0 for no."
         else:
             FileReaderWriter.writer(file_name=gp.First_Run_In_Progress, fieldname=fieldname, data=data)
-            file_name = gp.writing_Subsequent_Runs_In_Progress + file_name
+            file_name = gp.subsequent_runs_in_progress_folder + file_name
             FileReaderWriter.writer(file_name=file_name, fieldname=fieldname, data=data)
 
     @staticmethod

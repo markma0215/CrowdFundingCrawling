@@ -1,4 +1,3 @@
-
 import Global_Para as gp
 from ParseFundedProjects import ParseFundedPro as Funded
 from ParseCurrentProjects import ParseCurrentPro as Current
@@ -8,7 +7,6 @@ import logging
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 from FileReaderWriter import FileReaderWriter as FRW
-
 
 
 def login():
@@ -40,18 +38,26 @@ def login():
     logging.info("finished login process")
 
 
-def getFundedProcessNameList(funded, process):
+def getMaximumCampaignID(data):
+    compaign_max = 0
+    for each_property in data:
+        compaign_id = int(each_property["Campaign ID"])
+        if compaign_max < compaign_id:
+            compaign_max = compaign_id
+    return compaign_max
 
+def getFundedProcessNameList(funded, process):
     funded_namelist = []
     process_namelist = []
     for each_property in funded:
         funded_namelist = funded_namelist + each_property.keys()
 
-    # for each_property in process:
-    #     process_namelist = process_namelist + each_property.keys()
+    for each_property in process:
+        process_namelist = process_namelist + each_property.keys()
 
-    funded_namelist = gp.funded_variables_anchors + sorted(list(set(funded_namelist) - set(gp.funded_variables_anchors)))
-    # process_namelist = gp.in_process_variables_anchors + sorted(list(set(process_namelist) - set(gp.in_process_variables_anchors)))
+    funded_namelist = gp.funded_variables_anchors + sorted(
+        list(set(funded_namelist) - set(gp.funded_variables_anchors)))
+    process_namelist = gp.in_process_variables_anchors + sorted(list(set(process_namelist) - set(gp.in_process_variables_anchors)))
     print funded_namelist
     return funded_namelist, process_namelist
 
@@ -60,35 +66,34 @@ def main():
     login()
     all_property_page = gp.session.get("https://app.crowdstreet.com/properties/")
 
-    # current = Current(all_property_page.text)
-    # in_process_properties = current.parse()
+    current = Current(all_property_page.text)
+    in_process_properties = current.parse()
 
     funded = Funded(all_property_page.text)
     funded_properties = funded.parse()
 
-    funded, process = getFundedProcessNameList(funded_properties, gp.in_process_variables)
-
+    funded, process = getFundedProcessNameList(funded_properties, in_process_properties)
+    FRW.writeFirstRunFunded(fieldname=funded, data=funded_properties)
+    FRW.writeFirstRunInProgress(fieldname=process, data=in_process_properties)
 
 
 if __name__ == "__main__":
 
-
-    input = raw_input("Is first time to crawl this website? Yes: 1, No: 0\n")
-    if input == "1":
-        gp.isFirstTime = True
-    elif input == "0":
-        gp.isFirstTime = False
-        funded_variable_names, funded_data = FRW.readRunFundedProperties()
-        progress_variable_names, progress_data = FRW.readInProgressProperties()
-    else:
-        print "please enter 1 for yes, 0 for no."
-        print "Because wrong input, the system exits"
-        sys.exit(1)
+    # input = raw_input("Is first time to crawl this website? Yes: 1, No: 0\n")
+    # if input == "1":
+    #     gp.isFirstTime = False
+    # elif input == "0":
+    #     gp.isFirstTime = True
+    #     gp.funded_variables_infile, gp.funded_data = FRW.readRunFundedProperties()
+    #     gp.progress_variables_infile, gp.progress_data = FRW.readInProgressProperties()
+    #
+    #     gp.funded_campaign_id = getMaximumCampaignID(gp.funded_data)
+    #     gp.current_campaign_id = getMaximumCampaignID(gp.progress_data)
+    # else:
+    #     print "please enter 1 for yes, 0 for no."
+    #     print "Because wrong input, the system exits"
+    #     sys.exit(1)
 
     logging.basicConfig(level=logging.INFO)
     logging.info("Get Started to Crawl")
     main()
-
-
-
-

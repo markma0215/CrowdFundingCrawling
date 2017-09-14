@@ -36,7 +36,7 @@
   "Num. Investors": {
     "param": ".closed-num-investors > span",
     "moreOp": "string",
-    "replacement": "Investors"
+    "replacement": ["Investors", "Investor"]
   },
   "variables": {
     "key": {

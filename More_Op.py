@@ -9,12 +9,12 @@ def string(element, replacement=None):
         if replacement:
             if isinstance(replacement, list):
                 for each_replace in replacement:
-                    content = content.replace(each_replace, "").strip("\n").strip()
+                    content = content.replace(each_replace, "").encode("utf-8").strip("\n").strip()
                 return content
             else:
-                return content.replace(replacement, "").strip("\n").strip()
+                return content.replace(replacement, "").encode("utf-8").strip("\n").strip()
         else:
-            return content.strip('\n').strip()
+            return content.encode("utf-8").strip('\n').strip()
     else:
         return ""
 
@@ -69,7 +69,7 @@ def extractBusinessPlan(element):
                 business_plan = business_plan + each_string.replace("*", "").replace("/", " ").strip() + " "
             break
 
-    return business_plan.strip()
+    return business_plan.encode("utf-8").strip()
 
 
 more_Op = {

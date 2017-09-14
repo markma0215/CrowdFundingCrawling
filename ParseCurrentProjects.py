@@ -33,9 +33,9 @@ class ParseCurrentPro():
                 else:
                     config = self.__config[each_variable]
                     one_property.update(self.__parse_normal_variables(each_property, config, each_variable))
-            self.__saveHTML(one_property)
-            self.__downloadPDF(one_property)
-            print one_property
+            # self.__saveHTML(one_property)
+            # self.__downloadPDF(one_property)
+            del one_property["link"]
             self.__crawl_data.append(one_property)
 
         return self.__crawl_data
@@ -84,21 +84,19 @@ class ParseCurrentPro():
         with open(file_name, "w") as fd:
             fd.write(self.__learn_more_response.text.encode("utf-8"))
 
-
     def __downloadPDF(self, one_property):
-
         home_page_soup = BeautifulSoup(self.__learn_more_response.text, "html.parser")
         pdf_links = home_page_soup.select(".no-left-margin .list-unstyled > li > a")
         for each_link in pdf_links:
             link = each_link["href"]
             if "confidentiality-agreement" in link:
-                print "in agreement"
+                print "Campaign ID: %s has agreement" % one_property["Campaign ID"]
                 self.__aggre_confidentiality(link, home_page_soup)
                 document_link = each_link["data-document-url"]
                 pdf_url = gp.base_url + document_link
                 pdf_name = each_link.span.string.strip()
             else:
-                print "not have agreement"
+                print "Campaign ID: %s does not have agreement" % one_property["Campaign ID"]
                 pdf_url = gp.base_url + link
                 pdf_name = each_link.string.strip()
             response = gp.session.get(pdf_url)

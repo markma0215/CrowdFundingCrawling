@@ -3,14 +3,17 @@ import json
 import sys
 
 class checkSame():
+
+    notComparedVariables = ["Campaign ID", "link", "Data Collection Date", "First_Time(0/1)"]
+
     @classmethod
     def IsSame(cls, oldOne, newOne):
         if not isinstance(oldOne, dict) or not isinstance(newOne, dict):
-            print "the comparison method only can compare dictionaires"
+            print "the comparison method only can compare dictionaries"
             sys.exit(1)
         obj1Sorted = {}
         for each_key in sorted(oldOne.keys()):
-            if oldOne[each_key] == "":
+            if oldOne[each_key] == "" or each_key in cls.notComparedVariables:
                 continue
             obj1Sorted.update({each_key, oldOne[each_key]})
 
@@ -29,10 +32,6 @@ class checkSame():
             return False
 
     @classmethod
-    def SameCompaignFundName(cls, oldOne, newOne):
-        return oldOne["Campaign Name"] == newOne["Campaign Name"] and oldOne["Fund Name"] == newOne["Fund Name"]
-
-    @classmethod
     def getChangedVariables(cls, oldOne, newOne):
         changed = {}
         if len(oldOne.keys()) <= len(newOne.keys()):
@@ -41,6 +40,10 @@ class checkSame():
             iterKeys = oldOne.keys()
 
         for eachKey in iterKeys:
+
+            if eachKey in cls.notComparedVariables:
+                continue
+
             if eachKey in oldOne and eachKey in newOne:
                 if oldOne[eachKey] == newOne[eachKey]:
                     changed.update({eachKey: ""})
@@ -51,5 +54,15 @@ class checkSame():
             else:
                 changed.update({eachKey: newOne[eachKey]})
         return changed
+
+    @classmethod
+    def eraseSameVariables(cls, property):
+        cannotBeErased = ["Portal ID", "link", "Campaign ID", "Campaign Name", "Data Collection Date"]
+        for each_key in property:
+            if each_key in cannotBeErased:
+                continue
+            else:
+                property.update({each_key: ""})
+        return property
 
 

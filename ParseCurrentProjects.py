@@ -6,6 +6,7 @@ import logging
 from FileReaderWriter import FileReaderWriter
 from Parser import Parser
 import os.path
+from IsSame import checkSame
 
 
 class ParseCurrentPro():
@@ -33,12 +34,37 @@ class ParseCurrentPro():
                 else:
                     config = self.__config[each_variable]
                     one_property.update(self.__parse_normal_variables(each_property, config, each_variable))
-            # self.__saveHTML(one_property)
-            # self.__downloadPDF(one_property)
+
+            hasBefore, one_property = self.__compare(one_property)
+            if not hasBefore:
+                print "Campaign %s is a new guy" % one_property["Campaign Name"]
+                self.__saveHTML(one_property)
+                self.__downloadPDF(one_property)
+
             del one_property["link"]
             self.__crawl_data.append(one_property)
 
         return self.__crawl_data
+
+    def __compare(self, property):
+        """Compare the new in progress properties with old ones"""
+        key = property["Campaign Name"] + property["Fund Name"]
+        if key in gp.progress_data:
+            oldOne = gp.progress_data[key]
+            property.update({"First_Time(0/1)": 0})
+            property.update({"Campaign ID": oldOne["Campaign ID"]})
+            if checkSame.IsSame(oldOne, property):
+                property = checkSame.eraseSameVariables(property)
+                print "Campaign %s and ID is %s do not have changes" % (property["Campaign Name"], property["Campaign ID"])
+                return False, property
+            else:
+                print "Campaign %s and ID is %s do have changes" % (
+                property["Campaign Name"], property["Campaign ID"])
+                return False, checkSame.getChangedVariables(oldOne, property)
+        else:
+            property.update({"First_Time(0/1)": 1})
+            property.update({"Campaign ID": (gp.current_campaign_id + 1)})
+            return True, property
 
     def __parse_normal_variables(self, element, config, variable_name):
         one_property = {}

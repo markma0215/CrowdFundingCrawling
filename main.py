@@ -46,6 +46,16 @@ def getMaximumCampaignID(data):
             compaign_max = compaign_id
     return compaign_max
 
+
+def buildCompareModel(data):
+    model = {}
+    for each_data in data:
+        key = each_data["Campaign Name"] + each_data["Fund Name"]
+        value = each_data
+        model.update({key, value})
+    return model
+
+
 def getFundedProcessNameList(funded, process):
     funded_namelist = []
     process_namelist = []
@@ -68,31 +78,27 @@ def main():
 
     current = Current(all_property_page.text)
     in_process_properties = current.parse()
+    logging.info("finished crawling current properties")
 
     funded = Funded(all_property_page.text)
     funded_properties = funded.parse()
+    logging.info("finished crawling funded properties")
 
+    logging.info("get started to write files")
     funded, process = getFundedProcessNameList(funded_properties, in_process_properties)
     FRW.writeFirstRunFunded(fieldname=funded, data=funded_properties)
     FRW.writeFirstRunInProgress(fieldname=process, data=in_process_properties)
 
-
 if __name__ == "__main__":
 
-    # input = raw_input("Is first time to crawl this website? Yes: 1, No: 0\n")
-    # if input == "1":
-    #     gp.isFirstTime = False
-    # elif input == "0":
-    #     gp.isFirstTime = True
-    #     gp.funded_variables_infile, gp.funded_data = FRW.readRunFundedProperties()
-    #     gp.progress_variables_infile, gp.progress_data = FRW.readInProgressProperties()
-    #
-    #     gp.funded_campaign_id = getMaximumCampaignID(gp.funded_data)
-    #     gp.current_campaign_id = getMaximumCampaignID(gp.progress_data)
-    # else:
-    #     print "please enter 1 for yes, 0 for no."
-    #     print "Because wrong input, the system exits"
-    #     sys.exit(1)
+    gp.funded_variables_infile, gp.funded_data = FRW.readRunFundedProperties()
+    gp.progress_variables_infile, gp.progress_data = FRW.readInProgressProperties()
+
+    gp.funded_campaign_id = getMaximumCampaignID(gp.funded_data)
+    gp.current_campaign_id = getMaximumCampaignID(gp.progress_data)
+
+    gp.funded_data = buildCompareModel(gp.funded_data)
+    gp.progress_data = buildCompareModel(gp.progress_data)
 
     logging.basicConfig(level=logging.INFO)
     logging.info("Get Started to Crawl")

@@ -5,7 +5,7 @@ from More_Op import more_Op as mo
 
 from bs4 import BeautifulSoup
 import logging
-import sys
+from IsSame import checkSame
 
 class ParseFundedPro():
 
@@ -39,8 +39,31 @@ class ParseFundedPro():
                         one_property.update(Parser.parseSpecificVariable(each_property, config, variable_name, replacement=config["replacement"]))
                     else:
                         one_property.update(Parser.parseSpecificVariable(each_property, config, variable_name))
-            # print one_property
+            one_property = self.__compare(one_property)
             self.__crawl_data.append(one_property)
         return self.__crawl_data
 
+    def __compare(self, property):
+        key = property["Campaign Name"] + property["Fund Name"]
+        if key in gp.funded_data:
+            oldOne = gp.funded_data[key]
+            property.update({"First_Time(0/1)": 0})
+            property.update({"Campaign ID": oldOne["Campaign ID"]})
+            if checkSame.IsSame(oldOne, property):
+                print "Campaign %s and ID %s do not have any change" % (property["Campaign Name"], property["Campaign ID"])
+                return checkSame.eraseSameVariables(property)
+            else:
+                print "Campaign %s and ID %s do have changes" % (
+                property["Campaign Name"], property["Campaign ID"])
+                return checkSame.getChangedVariables(oldOne, property)
+        elif key in gp.progress_data:
+            property.update({"First_Time(0/1)": 1})
+            property.update({"Campaign ID": (gp.funded_campaign_id + 1)})
+            print "Campaign %s comes from progress properties" % property["Campaign Name"]
+            return property
+        else:
+            property.update({"First_Time(0/1)": 1})
+            property.update({"Campaign ID": (gp.funded_campaign_id + 1)})
+            print "Campaign %s air drops into the funded groups"
+            return property
 

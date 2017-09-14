@@ -24,11 +24,17 @@ def href_attribute(element):
 
 
 def current_campaign_id():
+    if not gp.isFirstTime:
+        return gp.current_campaign_id
+
     gp.current_campaign_id = gp.current_campaign_id + 1
     return str(gp.current_campaign_id)
 
 
 def funded_campaign_id():
+    if not gp.isFirstTime:
+        return gp.funded_campaign_id
+
     gp.funded_campaign_id = gp.funded_campaign_id + 1
     return str(gp.funded_campaign_id)
 

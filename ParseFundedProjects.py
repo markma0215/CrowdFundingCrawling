@@ -58,12 +58,12 @@ class ParseFundedPro():
                 return checkSame.getChangedVariables(oldOne, property)
         elif key in gp.progress_data:
             property.update({"First_Time(0/1)": 1})
-            property.update({"Campaign ID": (gp.funded_campaign_id + 1)})
+            property.update({"Campaign ID": str(gp.funded_campaign_id + 1)})
             print "Campaign %s comes from progress properties" % property["Campaign Name"]
             return property
         else:
             property.update({"First_Time(0/1)": 1})
-            property.update({"Campaign ID": (gp.funded_campaign_id + 1)})
+            property.update({"Campaign ID": str(gp.funded_campaign_id + 1)})
             print "Campaign %s air drops into the funded groups"
             return property
 

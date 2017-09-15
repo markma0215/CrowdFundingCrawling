@@ -44,6 +44,7 @@ class ParseCurrentPro():
             del one_property["link"]
             self.__crawl_data.append(one_property)
 
+        self.__crawl_data.sort(key=lambda x: int(x["Campaign ID"]))
         return self.__crawl_data
 
     def __compare(self, property):
@@ -55,16 +56,16 @@ class ParseCurrentPro():
             property.update({"Campaign ID": oldOne["Campaign ID"]})
             if checkSame.IsSame(oldOne, property):
                 property = checkSame.eraseSameVariables(property)
-                print "Campaign %s and ID is %s do not have changes" % (property["Campaign Name"], property["Campaign ID"])
-                return False, property
+                print "Campaign %s and ID %s do not have changes" % (property["Campaign Name"], property["Campaign ID"])
+                return True, property
             else:
-                print "Campaign %s and ID is %s do have changes" % (
+                print "Campaign %s and ID %s have changes" % (
                 property["Campaign Name"], property["Campaign ID"])
-                return False, checkSame.getChangedVariables(oldOne, property)
+                return True, checkSame.getChangedVariables(oldOne, property)
         else:
             property.update({"First_Time(0/1)": 1})
-            property.update({"Campaign ID": (gp.current_campaign_id + 1)})
-            return True, property
+            property.update({"Campaign ID": str(gp.current_campaign_id + 1)})
+            return False, property
 
     def __parse_normal_variables(self, element, config, variable_name):
         one_property = {}

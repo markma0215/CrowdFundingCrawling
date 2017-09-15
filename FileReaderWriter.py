@@ -21,7 +21,7 @@ class FileReaderWriter():
     @classmethod
     def readRunFundedProperties(cls):
         file_name = raw_input("please input the Subsequent Runs_Funded file name used as a base\n")
-        file_name = gp.subsequent_runs_funded_folder + file_name
+        file_name = gp.subsequent_runs_funded_folder + file_name + ".csv"
         if not os.path.exists(file_name):
             print "Error: cannot Subsequent Runs_Funded File"
             print "system exits..."
@@ -32,7 +32,7 @@ class FileReaderWriter():
     @classmethod
     def readInProgressProperties(cls):
         file_name = raw_input("please input Subsequent Runs_In Progress file name used as a base\n")
-        file_name = gp.subsequent_runs_in_progress_folder + file_name
+        file_name = gp.subsequent_runs_in_progress_folder + file_name + ".csv"
         if not os.path.exists(file_name):
             print "Error: cannot Subsequent Runs_In Progress File"
             print "system exits..."
@@ -141,7 +141,7 @@ class FileReaderWriter():
 
     @staticmethod
     def reader(file_name):
-        with open(file_name, "r") as csvDict:
+        with open(file_name, "rb") as csvDict:
             reader = csv.DictReader(csvDict)
             variable_names = reader.fieldnames
             previous_data = []

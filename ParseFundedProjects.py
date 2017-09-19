@@ -4,7 +4,6 @@ from Parser import Parser
 from More_Op import more_Op as mo
 
 from bs4 import BeautifulSoup
-import logging
 from IsSame import checkSame
 
 class ParseFundedPro():
@@ -17,8 +16,7 @@ class ParseFundedPro():
         self.__soup = BeautifulSoup(html_page, 'html.parser')
 
     def parse(self):
-        logging.basicConfig(level=logging.INFO)
-        logging.info("get started to crawl funded properties")
+        print "get started to crawl funded properties"
         self.__config = FileReaderWriter.readFundedConfig()
         properties_list = self.__soup.select(self.__config["funded_list"]["param"])
         for each_property in properties_list:
@@ -41,6 +39,7 @@ class ParseFundedPro():
                         one_property.update(Parser.parseSpecificVariable(each_property, config, variable_name))
             one_property = self.__compare(one_property)
             self.__crawl_data.append(one_property)
+        self.__crawl_data.sort(key=lambda x: int(x["Campaign ID"]))
         return self.__crawl_data
 
     def __compare(self, property):
@@ -64,6 +63,6 @@ class ParseFundedPro():
         else:
             property.update({"First_Time(0/1)": 1})
             property.update({"Campaign ID": str(gp.funded_campaign_id + 1)})
-            print "Campaign %s air drops into the funded groups"
+            print "Campaign %s drops into the funded groups"
             return property
 

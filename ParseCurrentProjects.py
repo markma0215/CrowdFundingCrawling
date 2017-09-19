@@ -2,7 +2,6 @@ import Global_Para as gp
 import sys
 from fake_useragent import UserAgent
 from bs4 import BeautifulSoup
-import logging
 from FileReaderWriter import FileReaderWriter
 from Parser import Parser
 import os.path
@@ -19,8 +18,8 @@ class ParseCurrentPro():
         self.__soup = BeautifulSoup(html_page, 'html.parser')
 
     def parse(self):
-        logging.basicConfig(level=logging.INFO)
-        logging.info("get started to crawl current properties")
+
+        print "get started to crawl current properties"
         self.__config = FileReaderWriter.readCurrentConfig()
         current_list_json = self.__config["current_list"]
         current_list = self.__soup.select(current_list_json["param"])

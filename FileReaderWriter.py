@@ -23,7 +23,7 @@ class FileReaderWriter():
         file_name = raw_input("please input the Subsequent Runs_Funded file name used as a base\n")
         file_name = gp.subsequent_runs_funded_folder + file_name + ".csv"
         if not os.path.exists(file_name):
-            print "Error: cannot Subsequent Runs_Funded File"
+            print "Error: cannot find file in Subsequent Runs_Funded Folder"
             print "system exits..."
             sys.exit(1)
 
@@ -34,7 +34,7 @@ class FileReaderWriter():
         file_name = raw_input("please input Subsequent Runs_In Progress file name used as a base\n")
         file_name = gp.subsequent_runs_in_progress_folder + file_name + ".csv"
         if not os.path.exists(file_name):
-            print "Error: cannot Subsequent Runs_In Progress File"
+            print "Error: cannot find file in Subsequent Runs_In Progress Folder"
             print "system exits..."
             sys.exit(1)
 

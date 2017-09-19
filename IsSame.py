@@ -7,6 +7,10 @@ class checkSame():
     notComparedVariables = ["Campaign ID", "link", "Data Collection Date", "First_Time(0/1)",
                             "Campaign Name", "Fund Name", "Portal ID"]
 
+    notMergedVariables = ["Campaign ID", "Campaign Name", "Fund Name", "Portal ID"]
+
+    cannotBeErased = ["Portal ID", "link", "Campaign ID", "Campaign Name", "Data Collection Date"]
+
     @classmethod
     def IsSame(cls, oldOne, newOne):
         if not isinstance(oldOne, dict) or not isinstance(newOne, dict):
@@ -47,12 +51,12 @@ class checkSame():
                 changed.update({eachKey: newOne[eachKey]})
                 continue
 
-            if eachKey in cls.notComparedVariables:
+            if eachKey in cls.notMergedVariables:
                 changed.update({eachKey: oldOne[eachKey]})
                 continue
 
             if eachKey in oldOne and eachKey in newOne:
-                if oldOne[eachKey] == newOne[eachKey]:
+                if oldOne[eachKey] == str(newOne[eachKey]):
                     changed.update({eachKey: ""})
                 else:
                     changed.update({eachKey: newOne[eachKey]})
@@ -64,9 +68,9 @@ class checkSame():
 
     @classmethod
     def eraseSameVariables(cls, property):
-        cannotBeErased = ["Portal ID", "link", "Campaign ID", "Campaign Name", "Data Collection Date"]
+
         for each_key in property:
-            if each_key in cannotBeErased:
+            if each_key in cls.cannotBeErased:
                 continue
             else:
                 property.update({each_key: ""})

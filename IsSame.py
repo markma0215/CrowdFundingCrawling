@@ -59,6 +59,9 @@ class checkSame():
                 if oldOne[eachKey] == str(newOne[eachKey]):
                     changed.update({eachKey: ""})
                 else:
+                    if eachKey not in cls.notComparedVariables:
+                        print "Previous -> " + '"' + eachKey + '": ' + oldOne[eachKey]
+                        print "Now -> " + '"' + eachKey + '": ' + str(newOne[eachKey])
                     changed.update({eachKey: newOne[eachKey]})
             elif eachKey in oldOne and eachKey not in newOne:
                 changed.update({eachKey: oldOne[eachKey]})

@@ -66,7 +66,6 @@ class ParseCurrentPro():
             else:
                 print "Campaign %s has changes" % property["Campaign Name"]
                 # return True, checkSame.getChangedVariables(oldOne, property)
-                print checkSame.getChangedVariables(oldOne, property)
                 return True, property
         else:
             gp.current_campaign_id += 1

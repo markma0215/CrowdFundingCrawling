@@ -35,7 +35,7 @@ def login():
 
     session.post(gp.login_url, headers=header, data=param)
     gp.session = session
-    print "Login finished"
+    print "Finished Login"
 
 
 def getMaximumCampaignID(data):
@@ -113,7 +113,7 @@ def getFundedProcessNameList(funded, process):
 
 
 def main():
-    choice = raw_input("Is it the first time to COLLECT DATA? (yes / no) \n")
+    choice = raw_input("Is it the FIRST RUN? (yes / no) \n")
     if str(choice).lower() == "yes":
         gp.isFirstTime = True
 
@@ -145,11 +145,17 @@ def main():
     in_process_properties = current.parse()
     # in_progress_next = buildNameModel(in_process_properties)
     print "finished crawling current properties"
+    print "===================================="
+    print "===================================="
+    print "===================================="
 
     funded = Funded(all_property_page.text)
     funded_properties = funded.parse()
     # funded_next = buildNameModel(funded_properties)
     print "finished crawling funded properties"
+    print "===================================="
+    print "===================================="
+    print "===================================="
 
     print "get started to write files"
     funded, process = getFundedProcessNameList(funded_properties, in_process_properties)

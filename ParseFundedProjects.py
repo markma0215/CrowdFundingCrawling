@@ -59,7 +59,6 @@ class ParseFundedPro():
             else:
                 print "Campaign %s has changes" % property["Campaign Name"]
                 # return checkSame.getChangedVariables(oldOne, property)
-                print checkSame.getChangedVariables(oldOne, property)
                 return property
         elif key in gp.progress_data:
             gp.funded_campaign_id += 1

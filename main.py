@@ -50,7 +50,7 @@ def getMaximumCampaignID(data):
 def buildModel(data):
     model = {}
     for each_data in data:
-        key = each_data["Campaign Name"] + each_data["Fund Name"]
+        key = each_data["Campaign Name"]
         value = each_data
         model.update({key: value})
     return model
@@ -108,21 +108,32 @@ def getFundedProcessNameList(funded, process):
     funded_namelist = gp.funded_variables_anchors + sorted(
         list(set(funded_namelist) - set(gp.funded_variables_anchors)))
     process_namelist = gp.in_process_variables_anchors + sorted(list(set(process_namelist) - set(gp.in_process_variables_anchors)))
-    print funded_namelist
+    # print funded_namelist
     return funded_namelist, process_namelist
 
 
 def main():
-    gp.funded_variables_infile, gp.funded_data = FRW.readRunFundedProperties()
-    gp.progress_variables_infile, gp.progress_data = FRW.readInProgressProperties()
+    choice = raw_input("Is it the first time to COLLECT DATA? (yes / no) \n")
+    if str(choice).lower() == "yes":
+        gp.isFirstTime = True
 
-    gp.funded_campaign_id = getMaximumCampaignID(gp.funded_data)
-    gp.current_campaign_id = getMaximumCampaignID(gp.progress_data)
+    elif str(choice).lower() == "no":
+        gp.isFirstTime = False
+        gp.funded_variables_infile, gp.funded_data = FRW.readRunFundedProperties()
+        gp.progress_variables_infile, gp.progress_data = FRW.readInProgressProperties()
 
-    funded_prev = buildNameModel(gp.funded_data)
+        gp.funded_campaign_id = getMaximumCampaignID(gp.funded_data)
+        gp.current_campaign_id = getMaximumCampaignID(gp.progress_data)
+
+    else:
+        print "please choose yes or no"
+        print "system exit...."
+        sys.exit(1)
+
+    # funded_prev = buildNameModel(gp.funded_data)
     gp.funded_data = buildModel(gp.funded_data)
-
-    in_progress_prev = buildNameModel(gp.progress_data)
+    #
+    # in_progress_prev = buildNameModel(gp.progress_data)
     gp.progress_data = buildModel(gp.progress_data)
 
 
@@ -132,23 +143,29 @@ def main():
 
     current = Current(all_property_page.text)
     in_process_properties = current.parse()
-    in_progress_next = buildNameModel(in_process_properties)
+    # in_progress_next = buildNameModel(in_process_properties)
     print "finished crawling current properties"
 
     funded = Funded(all_property_page.text)
     funded_properties = funded.parse()
-    funded_next = buildNameModel(funded_properties)
+    # funded_next = buildNameModel(funded_properties)
     print "finished crawling funded properties"
 
     print "get started to write files"
     funded, process = getFundedProcessNameList(funded_properties, in_process_properties)
-    FRW.writeRunsFundedProperties(fieldname=funded, data=funded_properties)
-    FRW.writeInProgressProperties(fieldname=process, data=in_process_properties)
+
+    if gp.isFirstTime:
+        FRW.writeFirstRunFunded(fieldname=funded, data=funded_properties)
+        FRW.writeFirstRunInProgress(fieldname=process, data=in_process_properties)
+    else:
+        FRW.writeRunsFundedProperties(fieldname=funded, data=funded_properties)
+        FRW.writeInProgressProperties(fieldname=process, data=in_process_properties)
+
     print "finished writing files"
 
-    print "get started to compare crawling results between previous and this one"
-    compareBeforewithAfter(in_progress_prev=in_progress_prev, in_progress_next=in_progress_next,
-                           funded_prev=funded_prev, funded_next=funded_next)
+    # print "get started to compare crawling results between previous and this one"
+    # compareBeforewithAfter(in_progress_prev=in_progress_prev, in_progress_next=in_progress_next,
+    #                        funded_prev=funded_prev, funded_next=funded_next)
 
 if __name__ == "__main__":
     main()

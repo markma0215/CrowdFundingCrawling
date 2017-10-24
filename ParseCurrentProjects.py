@@ -34,11 +34,17 @@ class ParseCurrentPro():
                     config = self.__config[each_variable]
                     one_property.update(self.__parse_normal_variables(each_property, config, each_variable))
 
-            hasBefore, one_property = self.__compare(one_property)
-            if not hasBefore:
-                print "Campaign %s is a new guy" % one_property["Campaign Name"]
+            if gp.isFirstTime:
+                one_property.update({"First_Time(0/1)": 0})
                 self.__saveHTML(one_property)
                 self.__downloadPDF(one_property)
+            else:
+                hasBefore, one_property = self.__compare(one_property)
+
+                if not hasBefore:
+                    print "Campaign %s is a new guy" % one_property["Campaign Name"]
+                    self.__saveHTML(one_property)
+                    self.__downloadPDF(one_property)
 
             del one_property["link"]
             self.__crawl_data.append(one_property)
@@ -48,22 +54,24 @@ class ParseCurrentPro():
 
     def __compare(self, property):
         """Compare the new in progress properties with old ones"""
-        key = property["Campaign Name"] + property["Fund Name"]
+        key = property["Campaign Name"]
         if key in gp.progress_data:
             oldOne = gp.progress_data[key]
             property.update({"First_Time(0/1)": 0})
             property.update({"Campaign ID": oldOne["Campaign ID"]})
             if checkSame.IsSame(oldOne, property):
-                property = checkSame.eraseSameVariables(property)
-                print "Campaign %s and ID %s do not have changes" % (property["Campaign Name"], property["Campaign ID"])
+                # property = checkSame.eraseSameVariables(property)
+                print "Campaign %s doesn't have changes" % property["Campaign Name"]
                 return True, property
             else:
-                print "Campaign %s and ID %s have changes" % (
-                property["Campaign Name"], property["Campaign ID"])
-                return True, checkSame.getChangedVariables(oldOne, property)
+                print "Campaign %s has changes" % property["Campaign Name"]
+                # return True, checkSame.getChangedVariables(oldOne, property)
+                print checkSame.getChangedVariables(oldOne, property)
+                return True, property
         else:
+            gp.current_campaign_id += 1
             property.update({"First_Time(0/1)": 1})
-            property.update({"Campaign ID": str(gp.current_campaign_id + 1)})
+            property.update({"Campaign ID": str(gp.current_campaign_id)})
             return False, property
 
     def __parse_normal_variables(self, element, config, variable_name):
@@ -106,7 +114,7 @@ class ParseCurrentPro():
         file_name = gp.Documents_In_Progress.replace("{ID}", one_property["Campaign ID"])
         if not os.path.exists(file_name):
             os.makedirs(file_name)
-        file_name = file_name + "/" + one_property["Campaign Name"] + ".html"
+        file_name = file_name + "/" + one_property["Campaign Name"].replace("/", " ") + ".html"
         with open(file_name, "w") as fd:
             fd.write(self.__learn_more_response.text.encode("utf-8"))
 
@@ -130,7 +138,7 @@ class ParseCurrentPro():
                 print "in download PDF, response code is not 200"
                 print response.status_code
                 sys.exit(1)
-            file_name = gp.Documents_In_Progress.replace("{ID}", one_property["Campaign ID"]) + "/" + pdf_name + ".pdf"
+            file_name = gp.Documents_In_Progress.replace("{ID}", one_property["Campaign ID"].replace("/", " ")) + "/" + pdf_name + ".pdf"
             with open(file_name, "wb") as pdfwriter:
                 pdfwriter.write(response.content)
 

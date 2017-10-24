@@ -37,32 +37,40 @@ class ParseFundedPro():
                         one_property.update(Parser.parseSpecificVariable(each_property, config, variable_name, replacement=config["replacement"]))
                     else:
                         one_property.update(Parser.parseSpecificVariable(each_property, config, variable_name))
-            one_property = self.__compare(one_property)
+
+            if gp.isFirstTime:
+                one_property.update({"First_Time(0/1)": 0})
+            else:
+                one_property = self.__compare(one_property)
             self.__crawl_data.append(one_property)
         self.__crawl_data.sort(key=lambda x: int(x["Campaign ID"]))
         return self.__crawl_data
 
     def __compare(self, property):
-        key = property["Campaign Name"] + property["Fund Name"]
+        key = property["Campaign Name"]
         if key in gp.funded_data:
             oldOne = gp.funded_data[key]
             property.update({"First_Time(0/1)": 0})
             property.update({"Campaign ID": oldOne["Campaign ID"]})
             if checkSame.IsSame(oldOne, property):
-                print "Campaign %s and ID %s do not have any change" % (property["Campaign Name"], property["Campaign ID"])
-                return checkSame.eraseSameVariables(property)
+                print "Campaign %s doesn't have any change" % property["Campaign Name"]
+                # return checkSame.eraseSameVariables(property)
+                return property
             else:
-                print "Campaign %s and ID %s do have changes" % (
-                property["Campaign Name"], property["Campaign ID"])
-                return checkSame.getChangedVariables(oldOne, property)
+                print "Campaign %s has changes" % property["Campaign Name"]
+                # return checkSame.getChangedVariables(oldOne, property)
+                print checkSame.getChangedVariables(oldOne, property)
+                return property
         elif key in gp.progress_data:
+            gp.funded_campaign_id += 1
             property.update({"First_Time(0/1)": 1})
-            property.update({"Campaign ID": str(gp.funded_campaign_id + 1)})
+            property.update({"Campaign ID": str(gp.funded_campaign_id)})
             print "Campaign %s comes from progress properties" % property["Campaign Name"]
             return property
         else:
+            gp.funded_campaign_id += 1
             property.update({"First_Time(0/1)": 1})
-            property.update({"Campaign ID": str(gp.funded_campaign_id + 1)})
-            print "Campaign %s drops into the funded groups"
+            property.update({"Campaign ID": str(gp.funded_campaign_id)})
+            print "Campaign %s drops into the funded groups" % property["Campaign Name"]
             return property
 
